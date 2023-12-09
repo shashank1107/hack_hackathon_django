@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f4; /* Very light grey */
+        }
+    </style>
+    <title>Centered Input Box</title>
+</head>
+<body class="flex flex-col items-center justify-center h-screen">
+
+<h1 id="head-txt" class="text-3xl mb-6">Demo App Setup</h1>
+
+<div class="container text-center">
+    <input id="app-name" type="text" placeholder="Type app name..."
+           class="bg-white focus:outline-none focus:ring focus:border-blue-300 px-6 py-3 m-4 text-lg">
+    <button class="bg-blue-200 hover:bg-blue-300 active:bg-blue-400 px-6 py-3 m-4 text-lg" onclick="submit_config()">
+        Submit
+    </button>
+</div>
+<small id="err-txt" class="text-red-500"></small>
+<small id="success-txt" class="text-green-500"></small>
+
+</body>
+
+<script>
+    function submit_config() {
+        var app_name = document.getElementById("app-name").value;
+        console.log(app_name + "...");
+        if (!app_name || app_name === "") {
+            document.getElementById('err-txt').innerText = "Add valid app name";
+            return;
+        }
+
+        var formData = {"app_name": app_name};
+
+        document.getElementById('head-txt').innerText = app_name + " setup";
+
+        fetch('{% url "demo:api-v1-configure-demo-app" %}', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+        }).then((response) => {
+            response.json().then(data => {
+                console.log(data);
+                document.getElementById('success-txt').value = data['message'];
+            }).catch(error => {
+                console.log(error);
+                document.getElementById('err-txt').value = error;
+            });
+        }).catch((error) => {
+            console.log(error);
+            document.getElementById('err-txt').value = error;
+        });
+    }
+</script>
+
+</html>

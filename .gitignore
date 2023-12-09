@@ -1,0 +1,14 @@
+# ignore .idea files
+.idea
+.idea/*
+
+# sqlite db file
+demo_app.sqlite3
+
+# excluding static files
+static
+staticfiles
+
+# venv
+.venv
+venv/
